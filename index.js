@@ -1,6 +1,6 @@
 const express = require("express")
 const app = express()
-var port = "3000"
+const config = require("./config/config.json")
 app.set("view engine", "ejs")
 
 
@@ -8,6 +8,6 @@ app.get('/', (req, res) => {
     res.render('index')
   });
   
-  app.listen(port, () => {
-    console.log(`server started on port ${port}!`);
+  app.listen(config.port, () => {
+    console.log(`server started on port ${config.port}!`);
   });
