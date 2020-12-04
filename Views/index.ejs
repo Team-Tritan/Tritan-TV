@@ -1,12 +1,72 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Tritan Radio</title>
+    <title>Tritan Radio</title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
 
-<h1>Tritan Radio</h1>
-<p>Welcome to Tritan radio! We play hit songs 24/7! Stay for as long as you like.</p>
+    <h1>Media Share</h1>
+    <p>Make your own room and share media to your frineds!</p>
+    <div class='room-maker'>
+        <div class='room-maker-md'>
+            <div class='inner'>
+                    <input class='input' id='roomName' placeholder="Enter Room Name">
+                    <br>
+                    <br>
+                    <a class='button' onclick="createRoom()">Create Room</a>
+                    <div class='bottom-margin'></div>
+            </div>
+        </div>
+    </div>
 
+    <div id="sucsessPOP" class="modal">
+
+        <div class="modal-content">
+          <h3>You did it 🎉</h3>
+          <a><a id='room-link'>Go to your room</a> or share it to your friends</a>
+          <br>
+          <br>
+          <input id='modal-input' class='input' width='100%' value=''>
+        </div>
+      
+    </div>
+
+
+    <script>
+        var modal = document.getElementById("sucsessPOP");
+
+        function createRoom(){
+        
+            let data = {
+                name: document.getElementById("roomName").value
+            }
+
+            let options = { 
+                method: 'POST', 
+                headers: { 
+                    'Content-Type':  
+                        'application/json;charset=utf-8' 
+                }, 
+                body: JSON.stringify(data) 
+            } 
+
+            let fRes = fetch("/api/v1/create", options);
+
+            fRes.then(res => {
+                res.json().then(d => {
+                    if(d.id){
+                        document.getElementById('modal-input').value = `${window.location.href}${d.id}`;
+                        document.getElementById('room-link').href  = `${window.location.href}${d.id}`;
+                        modal.style.display = "block";
+                    }else{
+
+                    }
+                });
+            });
+        }
+
+
+    </script>
 </body>
 </html>
