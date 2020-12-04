@@ -1,10 +1,11 @@
 {
   "name": "tritan-radio",
   "version": "1.0.0",
-  "description": "",
+  "description": "A simple radio service :)",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node .",
+    "start": "node ."
   },
   "repository": {
     "type": "git",
