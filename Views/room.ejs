@@ -3,16 +3,17 @@
 <head>
     <title>Tritan Radio</title>
     <link rel="stylesheet" href="/css/styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <script src="/client/socket.io/client-dist/socket.io.js"></script>
 </head>
 <body>
     <div class='grid-container'>
         <div class='left-page'>
             <h1>Welcome to <%= room.name %></h1>
             <div class='chatbox'>
+                <div id='message-holder'></div>
                 <div class='chatbox-below'>
-                    <input class='chat-box-input'>
-                    <button class='button' type="button">Send</button>
+                    <input id='message' class='chat-box-input'>
+                    <button class='button' id='send-button' type="button">Send</button>
                 </div>
             </div>
         </div>
@@ -21,11 +22,23 @@
 </body>
 
 <script>
-    const room = '<%- JSON.stringify(room) %>';
-
-    const socket = io('http://localhost:6000');
+    const room = JSON.parse('<%- JSON.stringify(room) %>');
+    const socket = io('http://localhost');
 
     socket.emit('new-user', { roomId:  room.id, name: "test"});
 
+    socket.on(`chat-message-${room.id}`, data => {
+        const messageHolder = document.getElementById('message-holder');
+        const messageElement = document.createElement('div');
+        messageElement.innerText = `User: ${data.name} ${data.message}`;
+        messageHolder.append(messageElement);
+    });
+
+    document.getElementById("send-button").addEventListener('click', () => {
+        const message = document.getElementById("message").value;
+        document.getElementById("message").value = "";
+        socket.emit('message', { message: message });
+
+    });
 </script>
 </html>
