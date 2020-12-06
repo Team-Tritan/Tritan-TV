@@ -8,7 +8,11 @@ const cors = require('cors');
 var users = {};
 const mongoose = require("mongoose");
 var server = http.createServer(app);
-var io = require('socket.io')(server);
+var io = require('socket.io')(server, {
+    cors: {
+      origin: '*',
+    }
+});
 server.listen(80);
 
 mongoose.connect(config.mongoString, { 
