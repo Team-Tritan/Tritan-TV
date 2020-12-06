@@ -31,7 +31,7 @@
 
 <script>
     const room = JSON.parse('<%- JSON.stringify(room) %>');
-    const socket = io('http://localhost');
+    const socket = io('http://167.71.20.93');
 
     socket.emit('new-user', { roomId:  room.id, name: "test"});
 
