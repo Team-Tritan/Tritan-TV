@@ -17,7 +17,15 @@
                 </div>
             </div>
         </div>
-        <div></div>
+        <div class='right-page' id='video'>
+            <br>
+            <br>
+            <br>
+            <input id='video-input' class='chat-box-input'>
+            <button class='button' id='video-button' type="button">To queue</button>
+            <iframe width='560' height='315' id='playBox' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe>
+
+        </div>
     </div>
 </body>
 
@@ -40,5 +48,24 @@
         socket.emit('message', { message: message });
 
     });
+
+
+    document.getElementById("video-button").addEventListener('click', () => {
+        const video = document.getElementById("video-input").value;
+        socket.emit(`start-video-play`, {video: video});
+
+        /*
+        const video = document.getElementById("video-input").value;
+        var url = "https://www.youtube.com/embed/" + video;
+        document.getElementById('playBox').src = url;
+        */
+    });
+
+    socket.on(`start-video-play-${room.id}`, (data) => {
+        const video = data.video;
+        var url = "https://www.youtube.com/embed/" + video + "?autoplay=1";
+        document.getElementById('playBox').src = url;
+    });
+
 </script>
 </html>

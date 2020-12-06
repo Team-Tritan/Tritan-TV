@@ -38,6 +38,10 @@ io.on('connection', socket => {
         console.log(`${data.message} From user: ${socket.id} in room: ${users[socket.id].roomId}`);
         io.sockets.emit(`chat-message-${users[socket.id].roomId}`, { message: data.message, name: users[socket.id].name});
     });
+
+    socket.on(`start-video-play`, data => {
+        io.sockets.emit(`start-video-play-${users[socket.id].roomId}`, { video: data.video });
+    })
 });
 
 
