@@ -22,6 +22,7 @@ mongoose.connect(config.mongoString, {
 app.use(express.json());
 app.use("/", express.static(path.join(__dirname, "public")));
 app.use("/client", express.static(path.join(__dirname, "node_modules")));
+app.set('views', path.join(__dirname, '/views'));
 app.set("view engine", "ejs");
 
 app.use("/", routing);
