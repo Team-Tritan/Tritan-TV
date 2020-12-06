@@ -4,6 +4,7 @@ const app = express()
 const path = require('path');
 const config = require("./config/config.json")
 const routing = require('./routes/index');
+const cors = require('cors');
 var users = {};
 const mongoose = require("mongoose");
 var server = http.createServer(app);
@@ -18,7 +19,7 @@ mongoose.connect(config.mongoString, {
     console.log("Connected to mongodb");
 });
 
-
+app.use(cors());
 app.use(express.json());
 app.use("/", express.static(path.join(__dirname, "public")));
 app.use("/client", express.static(path.join(__dirname, "node_modules")));
