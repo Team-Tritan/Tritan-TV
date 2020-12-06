@@ -3,13 +3,29 @@
 <head>
     <title>Tritan Radio</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
 </head>
 <body>
     <div class='grid-container'>
         <div class='left-page'>
             <h1>Welcome to <%= room.name %></h1>
+            <div class='chatbox'>
+                <div class='chatbox-below'>
+                    <input class='chat-box-input'>
+                    <button class='button' type="button">Send</button>
+                </div>
+            </div>
         </div>
         <div></div>
     </div>
 </body>
+
+<script>
+    const room = '<%- JSON.stringify(room) %>';
+
+    const socket = io('http://localhost:6000');
+
+    socket.emit('new-user', { roomId:  room.id, name: "test"});
+
+</script>
 </html>

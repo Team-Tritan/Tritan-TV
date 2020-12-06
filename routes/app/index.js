@@ -1,13 +1,14 @@
 const {Router} = require('express');
 var route = new Router();
+const rooms = require('../../models/room-data');
 
-route.use('/:id', (req, res) => {
+route.use('/:id', async (req, res) => {
 
-    if(!req.app.get("rooms").has(req.params.id)){
+    let room = await rooms.findOne({ id: req.params.id })
+
+    if(!room){
         res.status(404).end();
-    }
-
-    let room = req.app.get("rooms").get(req.params.id);
+    } 
 
     let data =  {
         room: room

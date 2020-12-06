@@ -12,6 +12,7 @@ body{
     padding: 10px;
     border-radius: 2px;
     box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+    border: none;
 }
 
 .room-maker{
@@ -67,4 +68,13 @@ body{
 
 a {
     text-decoration: none;
+    color: white !important;
+}
+
+.chat-box-input{
+    padding: 10px;
+    background-color: #2c2c2c;
+    color: white;
+    border: none;
+    width: 50%;
 }
