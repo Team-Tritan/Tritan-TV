@@ -3,50 +3,90 @@
 <head>
     <title>Tritan Radio</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/room.css">
     <script src="/client/socket.io/client-dist/socket.io.js"></script>
 </head>
 <body>
-    <div class='grid-container'>
-        <div class='left-page'>
-            <h1>Welcome to <%= room.name %></h1>
-            <div class='chatbox'>
-                <div id='message-holder'></div>
-                <div class='chatbox-below'>
-                    <input id='message' class='chat-box-input'>
-                    <button class='button' id='send-button' type="button">Send</button>
+    <div class='loader-info' id='loader'>
+        <h1>Loading... </h1>
+        <br>
+        <div class='contianer'>
+            <div class="dash uno"></div>
+            <div class="dash dos"></div>
+            <div class="dash tres"></div>
+            <div class="dash cuatro"></div>
+        </div>
+        <br>
+        <br>
+        <p>Initalizing Websocket Connection</p>
+    </div>
+
+
+    <div class='main-content' id='main-content' style='display: none;'>
+        <div class='grid-container'>
+            <div class='left-page'>
+                <h1>Welcome to <%= room.name %></h1>
+            </div>
+
+            <div class='chatbox-holder'>
+                <div class='chatbox'>
+                    <div class='message-holder' id='message-holder'>
+
+                    </div>
+                    <div class='chatbox-below'>
+                        <input id='message' class='chat-box-input'>
+                        <button class='button' id='send-button' type="button">Send</button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class='right-page' id='video'>
-            <br>
-            <br>
-            <br>
-            <input id='video-input' class='chat-box-input'>
-            <button class='button' id='video-button' type="button">To queue</button>
-            <iframe width='560' height='315' id='playBox' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe>
 
-        </div>
+            <!--
+            <div class='right-page' id='video'>
+                <br>
+                <br>
+                <br>
+                <input id='video-input' class='chat-box-input'>
+                <button class='button' id='video-button' type="button">To queue</button>
+                <iframe width='560' height='315' id='playBox' frameborder='0' allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe>
+    
+            </div>-->
+        </div>    
     </div>
+
 </body>
 
 <script>
     const room = JSON.parse('<%- JSON.stringify(room) %>');
-    const socket = io('http://167.71.20.93');
+    const socket = io('http://localhost');
 
-    socket.emit('new-user', { roomId:  room.id, name: "test"});
+    socket.on('connect', () => {
+        document.getElementById('loader').style.display = "none";
+        document.getElementById("main-content").style.display = "block";
+    });
+
+    socket.emit('new-user', { roomId:  room.id, name: localStorage.getItem("name") ? localStorage.getItem("name") : "Anon"});
 
     socket.on(`chat-message-${room.id}`, data => {
         const messageHolder = document.getElementById('message-holder');
         const messageElement = document.createElement('div');
-        messageElement.innerText = `User: ${data.name} ${data.message}`;
+        messageElement.innerText = `${data.name}: ${data.message}`;
         messageHolder.append(messageElement);
     });
 
+    
     document.getElementById("send-button").addEventListener('click', () => {
         const message = document.getElementById("message").value;
         document.getElementById("message").value = "";
         socket.emit('message', { message: message });
 
+    });
+
+    document.getElementById("message").addEventListener('keyup', (key) => {
+        if(key.keyCode == 13){
+            const message = document.getElementById("message").value;
+            document.getElementById("message").value = "";
+            socket.emit('message', { message: message });
+        }
     });
 
 
