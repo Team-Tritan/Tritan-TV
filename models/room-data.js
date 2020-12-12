@@ -7,6 +7,7 @@ const roomData = mongoose.Schema({
   public: Boolean,
   userLimit: Number,
   password: String,
+  ownerToken: String,
 });
 
 module.exports = mongoose.model("Room Data", roomData, "Room Data");

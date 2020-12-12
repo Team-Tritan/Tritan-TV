@@ -4,7 +4,7 @@ var route = new Router();
 
 route.post("/", async (req, res, next) => {
   const rand = Math.random().toString().substr(2, 8);
-
+  const ownerToken = Math.random().toString().substr(2, 8);
   try {
     await new rooms({
       id: rand,
@@ -13,6 +13,7 @@ route.post("/", async (req, res, next) => {
       name: req.body.name ? req.body.name : rand,
       userLimit: req.body.userLimit ? req.body.userLimit : 90,
       password: req.body.password ? req.body.password : "",
+      ownerToken: ownerToken,
     }).save();
 
     let room = await rooms.findOne({ id: rand });

@@ -57,19 +57,28 @@
 
 <script>
     const room = JSON.parse('<%- JSON.stringify(room) %>');
-    const socket = io('http://localhost');
+    const socket = io('http://localhost/chat');
 
     socket.on('connect', () => {
         document.getElementById('loader').style.display = "none";
         document.getElementById("main-content").style.display = "block";
+        checkOwnership();
     });
 
-    socket.emit('new-user', { roomId:  room.id, name: localStorage.getItem("name") ? localStorage.getItem("name") : "Anon"});
+    socket.emit('join-chat', { roomId:  room.id, name: localStorage.getItem("name") ? localStorage.getItem("name") : "Anon"});
 
-    socket.on(`chat-message-${room.id}`, data => {
+    socket.on(`chat-message`, data => {
         const messageHolder = document.getElementById('message-holder');
         const messageElement = document.createElement('div');
         messageElement.innerText = `${data.name}: ${data.message}`;
+        messageHolder.append(messageElement);
+    });
+
+    socket.on(`system-log`, (data) => {
+        const messageHolder = document.getElementById('message-holder');
+        const messageElement = document.createElement('div');
+        messageElement.innerText = `${data}`;
+        messageElement.style.color = "grey";
         messageHolder.append(messageElement);
     });
 
@@ -89,16 +98,16 @@
         }
     });
 
-
+/*
     document.getElementById("video-button").addEventListener('click', () => {
         const video = document.getElementById("video-input").value;
         socket.emit(`start-video-play`, {video: video});
 
-        /*
+        
         const video = document.getElementById("video-input").value;
         var url = "https://www.youtube.com/embed/" + video;
         document.getElementById('playBox').src = url;
-        */
+        
     });
 
     socket.on(`start-video-play-${room.id}`, (data) => {
@@ -106,6 +115,7 @@
         var url = "https://www.youtube.com/embed/" + video + "?autoplay=1";
         document.getElementById('playBox').src = url;
     });
-
+*/
 </script>
+<script src="/js/roomutils.js"></script>
 </html>

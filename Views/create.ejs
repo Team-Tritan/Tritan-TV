@@ -76,7 +76,8 @@
     <script>
         var modal = document.getElementById("sucsessPOP");
         var name;
-
+        console.log('%cStop!', 'font-size: 40px; color: red');
+        console.log('If you paste anything in the console it could give someone accsess to control your rooms!');
         function setName(){
             var nameInput = document.getElementById("username");
             var usernamePrompt = document.getElementById('username-prompt');
@@ -118,6 +119,7 @@
             fRes.then(res => {
                 res.json().then(d => {
                     if(d.id){
+                        localStorage.setItem(`ownershipToken_${d.id}`, d.ownerToken);
                         document.getElementById('modal-input').value = `${window.location.href}${d.id}`;
                         document.getElementById('room-link').href  = `${window.location.href}${d.id}`;
                         modal.style.display = "block";
