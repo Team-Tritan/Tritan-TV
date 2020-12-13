@@ -152,9 +152,22 @@
         }
     });
 
-
     videos.on("send-time-sync", () => {
-        console.log(myPlayer.currentTime);
+        let playerTime = myPlayer.currentTime();
+        var isPlaying = !myPlayer.paused();
+        console.log( {time: playerTime ? playerTime : 0, state: isPlaying })
+
+        videos.emit("server-time-sync", {time: playerTime, state: isPlaying });
+    });
+
+    videos.on("client-time-sync", (data) => {
+        myPlayer.currentTime(data.time);
+        console.log(data.state);
+        if(data.state){
+            myPlayer.play();
+        } else {
+            myPlayer.pause();
+        }
     });
 
     socket.on(`chat-message`, data => {

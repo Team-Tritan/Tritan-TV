@@ -9,6 +9,9 @@ const rooms = require("./models/room-data");
 var users = {};
 const mongoose = require("mongoose");
 var server = http.createServer(app);
+let connectedUsers = new Map();
+let connectedQueue = new Map();
+let roomQueue = new Map();
 var io = require("socket.io")(server, {
   cors: {
     origin: "*",
@@ -17,6 +20,25 @@ var io = require("socket.io")(server, {
     credentials: true,
   },
 });
+
+function ownershipCheck(room, user, socketId) {
+  if (room.masterUser == "") {
+    room.masterUser = socketId;
+    roomQueue.set(user.room, room);
+  }
+}
+
+function queueCheck(roomid, socketId) {
+  if (!roomQueue.has(roomid)) {
+    roomQueue.set(roomid, {
+      queue: ["https://www.youtube.com/watch?v=PsBPPkt0Rbg&ab_channel=LXNRKD"],
+      masterUser: socketId,
+      currentTime: 0.0,
+    });
+  }
+
+  return roomQueue.get(roomid);
+}
 
 server.listen(80);
 
@@ -38,10 +60,6 @@ app.set("views", path.join(__dirname, "/views"));
 app.set("view engine", "ejs");
 
 app.use("/", routing);
-
-let connectedUsers = new Map();
-let connectedQueue = new Map();
-let roomQueue = new Map();
 
 io.of("/chat").on("connection", (socket) => {
   socket.on("join-chat", (data) => {
@@ -68,36 +86,19 @@ io.of("/videos").on("connection", (socket) => {
   socket.on("join-room-queue", (data) => {
     if (data.roomId) {
       socket.join(data.roomId);
-      if (!roomQueue.has(data.roomId)) {
-        roomQueue.set(data.roomId, {
-          queue: ["https://www.youtube.com/watch?v=RSt5if-3qjI"],
-          masterUser: socket.id,
-          currentTime: 0.0,
-        });
-      }
+      let room = queueCheck(data.roomId, socket.id);
       connectedQueue.set(socket.id, { room: data.roomId });
       let user = connectedQueue.get(socket.id);
-      let room = roomQueue.get(user.room);
-
-      if (!room.masterUser == "") {
-        room.masterUser = socket.id;
-        roomQueue.set(user.room, room);
-      }
+      //let room = roomQueue.get(user.room);
+      ownershipCheck(room, user, socket.id);
     }
   });
 
   socket.on("user-video-sync", (data) => {
     let user = connectedQueue.get(socket.id);
-    console.log(user);
     if (user) {
-      if (!roomQueue.has(user.room)) {
-        roomQueue.set(user.room, {
-          queue: ["https://www.youtube.com/watch?v=RSt5if-3qjI"],
-          masterUser: socket.id,
-          currentTime: 0.0,
-        });
-      }
-      let queue = roomQueue.get(user.room);
+      let queue = queueCheck(user.room, socket.id);
+
       io.of("/videos")
         .in(user.room)
         .emit("client-video-sync", { queue: queue });
@@ -106,37 +107,27 @@ io.of("/videos").on("connection", (socket) => {
 
   socket.on("user-time-sync", (data) => {
     let user = connectedQueue.get(socket.id);
+    console.log(socket.id);
     if (user) {
-      if (!roomQueue.has(user.room)) {
-        roomQueue.set(user.room, {
-          queue: ["https://www.youtube.com/watch?v=RSt5if-3qjI"],
-          masterUser: socket.id,
-          currentTime: 0.0,
-        });
-      }
-      let room = roomQueue.get(user.room);
+      let room = queueCheck(user.room, socket.id);
       console.log(room.masterUser);
-      console.log(socket.id);
       io.of("/videos").to(room.masterUser).emit("send-time-sync", {});
     }
+  });
+
+  socket.on("server-time-sync", (data) => {
+    io.of("/videos").emit("client-time-sync", {
+      time: data.time,
+      state: data.state,
+    });
   });
 
   socket.on("advance-queue", (data) => {
     let user = connectedQueue.get(socket.id);
     if (user) {
-      if (!roomQueue.has(user.room)) {
-        roomQueue.set(user.room, {
-          queue: ["https://www.youtube.com/watch?v=RSt5if-3qjI"],
-          masterUser: socket.id,
-          currentTime: 0.0,
-        });
-      }
-      let room = roomQueue.get(user.room);
+      let room = queueCheck(user.room, socket.id);
 
-      if (!room.masterUser == "") {
-        room.masterUser = socket.id;
-        roomQueue.set(user.room, room);
-      }
+      ownershipCheck(room, socket.id);
 
       if (socket.id == room.masterUser) {
         room.queue.splice(0, 1);
@@ -151,20 +142,9 @@ io.of("/videos").on("connection", (socket) => {
   socket.on("user-add-to-queue", (data) => {
     let user = connectedQueue.get(socket.id);
     if (user) {
-      if (!roomQueue.has(user.room)) {
-        roomQueue.set(user.room, {
-          queue: ["https://www.youtube.com/watch?v=RSt5if-3qjI"],
-          masterUser: socket.id,
-          currentTime: 0.0,
-        });
-      }
+      let room = queueCheck(user.room, socket.id);
 
-      let room = roomQueue.get(user.room);
-
-      if (!room.masterUser == "") {
-        room.masterUser = socket.id;
-        roomQueue.set(user.room, room);
-      }
+      ownershipCheck(room, socket.id);
 
       if (data.video) {
         room.queue.push(data.video);
@@ -174,14 +154,16 @@ io.of("/videos").on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     let user = connectedQueue.get(socket.id);
-    let room = roomQueue.get(user.room);
+    if (user) {
+      let room = queueCheck(user.room, socket.id);
 
-    if (socket.id == room.id) {
-      room.masterUser = "";
-      roomQueue.set(user.room, room);
+      if (socket.id == room.id) {
+        room.masterUser = "";
+        roomQueue.set(user.room, room);
+      }
+      connectedQueue.delete(socket.id);
+      console.log("Client disconnected!");
     }
-    connectedQueue.delete(socket.id);
-    console.log("Client disconnected!");
   });
 });
 
