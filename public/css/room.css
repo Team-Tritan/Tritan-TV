@@ -60,7 +60,15 @@
   z-index: 9999;
   height: 100vh;
 }
+.media-controls-buttons {
+  text-align: center;
+}
 
+.imgButton {
+  background-color: transparent;
+  height: 30px;
+  border: none;
+}
 .mediaControls {
   width: 300px;
   position: fixed;

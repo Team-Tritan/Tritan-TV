@@ -41,14 +41,19 @@
                         <button class='button' id='send-button' type="button">Send</button>
                     </div>
                 </div>
-                
-                <div class='mediaControls'>
-                    <div class='chatbox-below'>
-                        <input id='message' class='chat-box-input'>
-                        <button class='button' id='send-button' type="button">Send</button>
-                    </div>
-                    <div class='message-holder' id='message-holder'>
 
+                <div class='mediaControls'>
+                    <div class='message-holder'>
+                        <div class='media-controls-buttons'>
+                            <button class='imgButton'  type="button"><img src='/assets/play.svg'></button>
+                            <button class='imgButton'  type="button"><img src='/assets/pause.svg'></button>
+                            <button class='imgButton'  type="button"><img src='/assets/skip_prev.svg'></button>
+                            <button class='imgButton' id='advance-queue' type="button"><img src='/assets/skip.svg'></button>
+                        </div>
+                        <div>
+                            <input id='queueVideo' class='chat-box-input'>
+                            <button class='button' id='send-queue' type="button">Queue</button>
+                        </div>
                     </div>
                 </div>
 
@@ -65,12 +70,12 @@
                       >
                       </video>
                       <div class='room-info'>
-                            <div class='room-info-content' style='padding: 5px; margin-top: 10px; margin-right: 10px; border: 3px solid orange; border-radius: 50%;'>
-                                <img src='/assets/idle.png' height="90px">
+                            <div class='room-info-content' id='status-monitor-img-holder' style='padding: 5px; margin-top: 10px; margin-right: 10px; border: 3px solid orange; border-radius: 50%;'>
+                                <img id='status-monitor-img' src='/assets/idle.png' height="90px">
                             </div>
                           <div class='room-info-content'>
                             <h1><%= room.name %></h1>
-                            <p>Idle</p>
+                            <p id='status-monitor'>Idle</p>
                           </div>
                       </div>
                     </div>
@@ -140,6 +145,9 @@
                 myPlayer.currentTime(190);
                 myPlayer.play();
                 videos.emit('user-time-sync', { roomId:  room.id });
+                document.getElementById("status-monitor").innerText = "Watching youtube with 1 people";
+                document.getElementById("status-monitor-img").src = "/assets/ytLogo.png";
+                document.getElementById("status-monitor-img-holder").style.border = "3px solid red";
             }
         }
     });
@@ -169,6 +177,19 @@
         const message = document.getElementById("message").value;
         document.getElementById("message").value = "";
         socket.emit('message', { message: message });
+
+    });
+
+    document.getElementById("send-queue").addEventListener('click', () => {
+        const queueVideo = document.getElementById("queueVideo").value;
+        document.getElementById("queueVideo").value = "";
+        videos.emit('user-add-to-queue', { video: queueVideo });
+
+    });
+
+
+    document.getElementById('advance-queue').addEventListener('click', () => {
+        videos.emit('advance-queue', { video: queueVideo });
 
     });
 
