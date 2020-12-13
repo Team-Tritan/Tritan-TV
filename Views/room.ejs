@@ -5,6 +5,9 @@
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/room.css">
     <script src="/client/socket.io/client-dist/socket.io.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.8.1/video-js.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/7.8.1/video.min.js"></script>
+<script src='/js/youtube.js'></script>
 </head>
 <body>
     <div class='loader-info' id='loader'>
@@ -25,7 +28,7 @@
     <div class='main-content' id='main-content' style='display: none;'>
         <div class='grid-container'>
             <div class='left-page'>
-                <h1>Welcome to <%= room.name %></h1>
+
             </div>
 
             <div class='chatbox-holder'>
@@ -36,6 +39,40 @@
                     <div class='chatbox-below'>
                         <input id='message' class='chat-box-input'>
                         <button class='button' id='send-button' type="button">Send</button>
+                    </div>
+                </div>
+                
+                <div class='mediaControls'>
+                    <div class='chatbox-below'>
+                        <input id='message' class='chat-box-input'>
+                        <button class='button' id='send-button' type="button">Send</button>
+                    </div>
+                    <div class='message-holder' id='message-holder'>
+
+                    </div>
+                </div>
+
+
+                <div class='content'>
+                    <div class='video-player' id='video-player-div'>
+                        <video
+                        id="vid1"
+                        class="video-js vjs-default-skin"
+                        controls
+                        width="1280"
+                        height="720"
+                        data-setup='{ "techOrder": ["youtube"], "sources": [{ "type": "video/youtube", "src": "https://www.youtube.com/watch?v=_QfPliSW83A&ab_channel=Emma"}], "youtube": { "customVars": { "wmode": "transparent" } } }'
+                      >
+                      </video>
+                      <div class='room-info'>
+                            <div class='room-info-content' style='padding: 5px; margin-top: 10px; margin-right: 10px; border: 3px solid orange; border-radius: 50%;'>
+                                <img src='/assets/idle.png' height="90px">
+                            </div>
+                          <div class='room-info-content'>
+                            <h1><%= room.name %></h1>
+                            <p>Idle</p>
+                          </div>
+                      </div>
                     </div>
                 </div>
             </div>
@@ -58,6 +95,31 @@
 <script>
     const room = JSON.parse('<%- JSON.stringify(room) %>');
     const socket = io('http://localhost/chat');
+    const videos = io("http://localhost/videos");
+
+    var myPlayer;
+    videojs("vid1", {"height":"auto", "width":"auto"}).ready(function(){ 
+        videos.emit('user-video-sync', { roomId:  room.id });
+        myPlayer = this;  
+        myPlayer.play();
+        function resizeVideoJS(){
+            let playerDiv =  document.getElementById('video-player-div');
+            
+            console.log(playerDiv.offsetWidth)
+            myPlayer.width(playerDiv.offsetWidth).height(playerDiv.offsetHeight);
+        }
+        resizeVideoJS();
+
+        myplayer.on('ended', () => {
+            videos.emit("advance-queue", {});
+            console.log("video has ended");
+        });
+    });
+
+
+    document.addEventListener("resize", () => {
+        console.log("resized")
+    });
 
     socket.on('connect', () => {
         document.getElementById('loader').style.display = "none";
@@ -66,6 +128,26 @@
     });
 
     socket.emit('join-chat', { roomId:  room.id, name: localStorage.getItem("name") ? localStorage.getItem("name") : "Anon"});
+    videos.emit('join-room-queue', { roomId:  room.id });
+    videos.emit('user-video-sync', { roomId:  room.id });
+
+    videos.on("client-video-sync", data => {
+        console.log(data.queue);
+        if(data.queue.queue){
+            if(myPlayer){
+                let queue = data.queue;
+                myPlayer.src([{ type: 'video/youtube', src: queue.queue[0] }]);
+                myPlayer.currentTime(190);
+                myPlayer.play();
+                videos.emit('user-time-sync', { roomId:  room.id });
+            }
+        }
+    });
+
+
+    videos.on("send-time-sync", () => {
+        console.log(myPlayer.currentTime);
+    });
 
     socket.on(`chat-message`, data => {
         const messageHolder = document.getElementById('message-holder');

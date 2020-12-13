@@ -34,7 +34,11 @@
 .loader-info .contianer {
   display: flex;
 }
-
+.content {
+  position: relative;
+  left: 360px;
+  overflow: none;
+}
 .loader-info {
   position: absolute;
   left: 50%;
@@ -44,18 +48,45 @@
 }
 
 .chatbox-holder {
-  float: right;
-  margin: 0 auto;
+  display: block;
+  height: 100%;
 }
 
 .chatbox {
-  width: 400px;
+  width: 350px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  height: 100vh;
+}
+
+.mediaControls {
+  width: 300px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 9999;
+  height: 100vh;
+}
+
+.room-info {
+  display: inline;
+  float: left;
+}
+.room-info-content {
+  display: inline;
+  float: left;
+}
+
+.video-player {
+  width: 65%;
+  height: auto;
 }
 
 .message-holder {
   min-height: 90vh;
   max-height: 90vh;
-  margin-top: -80px;
   overflow-y: scroll;
   padding: 20px;
   margin-right: -8px;

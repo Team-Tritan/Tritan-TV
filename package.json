@@ -23,6 +23,8 @@
     "express": "^4.17.1",
     "http": "0.0.1-security",
     "mongoose": "^5.11.3",
-    "socket.io": "^3.0.3"
+    "socket.io": "^3.0.3",
+    "video.js": "^7.10.2",
+    "videojs-youtube": "^2.6.1"
   }
 }

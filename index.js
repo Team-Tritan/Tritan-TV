@@ -40,6 +40,8 @@ app.set("view engine", "ejs");
 app.use("/", routing);
 
 let connectedUsers = new Map();
+let connectedQueue = new Map();
+let roomQueue = new Map();
 
 io.of("/chat").on("connection", (socket) => {
   socket.on("join-chat", (data) => {
@@ -59,6 +61,127 @@ io.of("/chat").on("connection", (socket) => {
     io.of("/chat")
       .in(user.room)
       .emit(`chat-message`, { message: data.message, name: user.name });
+  });
+});
+
+io.of("/videos").on("connection", (socket) => {
+  socket.on("join-room-queue", (data) => {
+    if (data.roomId) {
+      socket.join(data.roomId);
+      if (!roomQueue.has(data.roomId)) {
+        roomQueue.set(data.roomId, {
+          queue: ["https://www.youtube.com/watch?v=RSt5if-3qjI"],
+          masterUser: socket.id,
+          currentTime: 0.0,
+        });
+      }
+      connectedQueue.set(socket.id, { room: data.roomId });
+      let user = connectedQueue.get(socket.id);
+      let room = roomQueue.get(user.room);
+
+      if (!room.masterUser == "") {
+        room.masterUser = socket.id;
+        roomQueue.set(user.room, room);
+      }
+    }
+  });
+
+  socket.on("user-video-sync", (data) => {
+    let user = connectedQueue.get(socket.id);
+    console.log(user);
+    if (user) {
+      if (!roomQueue.has(user.room)) {
+        roomQueue.set(user.room, {
+          queue: ["https://www.youtube.com/watch?v=RSt5if-3qjI"],
+          masterUser: socket.id,
+          currentTime: 0.0,
+        });
+      }
+      let queue = roomQueue.get(user.room);
+      io.of("/videos")
+        .in(user.room)
+        .emit("client-video-sync", { queue: queue });
+    }
+  });
+
+  socket.on("user-time-sync", (data) => {
+    let user = connectedQueue.get(socket.id);
+    if (user) {
+      if (!roomQueue.has(user.room)) {
+        roomQueue.set(user.room, {
+          queue: ["https://www.youtube.com/watch?v=RSt5if-3qjI"],
+          masterUser: socket.id,
+          currentTime: 0.0,
+        });
+      }
+      let room = roomQueue.get(user.room);
+      console.log(room.masterUser);
+      console.log(socket.id);
+      io.of("/videos").to(room.masterUser).emit("send-time-sync", {});
+    }
+  });
+
+  socket.on("advance-queue", (data) => {
+    let user = connectedQueue.get(socket.id);
+    if (user) {
+      if (!roomQueue.has(user.room)) {
+        roomQueue.set(user.room, {
+          queue: ["https://www.youtube.com/watch?v=RSt5if-3qjI"],
+          masterUser: socket.id,
+          currentTime: 0.0,
+        });
+      }
+      let room = roomQueue.get(user.room);
+
+      if (!room.masterUser == "") {
+        room.masterUser = socket.id;
+        roomQueue.set(user.room, room);
+      }
+
+      if (socket.id == room.masterUser) {
+        room.queue.splice(0, 1);
+        roomQueue.set(user.room, room);
+        io.of("/videos")
+          .in(user.room)
+          .emit("client-video-sync", { queue: room });
+      }
+    }
+  });
+
+  socket.on("user-add-to-queue", (data) => {
+    let user = connectedQueue.get(socket.id);
+    if (user) {
+      if (!roomQueue.has(user.room)) {
+        roomQueue.set(user.room, {
+          queue: ["https://www.youtube.com/watch?v=RSt5if-3qjI"],
+          masterUser: socket.id,
+          currentTime: 0.0,
+        });
+      }
+
+      let room = roomQueue.get(user.room);
+
+      if (!room.masterUser == "") {
+        room.masterUser = socket.id;
+        roomQueue.set(user.room, room);
+      }
+
+      if (data.video) {
+        room.queue.push(data.video);
+      }
+    }
+  });
+
+  socket.on("disconnect", () => {
+    let user = connectedQueue.get(socket.id);
+    let room = roomQueue.get(user.room);
+
+    if (socket.id == room.id) {
+      room.masterUser = "";
+      roomQueue.set(user.room, room);
+    }
+    connectedQueue.delete(socket.id);
+    console.log("Client disconnected!");
   });
 });
 
