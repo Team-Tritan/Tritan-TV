@@ -13,19 +13,22 @@ let connectedUsers = new Map();
 let connectedQueue = new Map();
 let roomQueue = new Map();
 
-server.listen(80);
+server.listen(3000, () => {
+  console.log("Listening for socket connections");
+});
 
 function ownershipCheck(room, user, socketId) {
   if (room.masterUser == "") {
     room.masterUser = socketId;
     roomQueue.set(user.room, room);
   }
+  console.log(`User requesting ${socketId} master user: ${room.masterUser}`);
 }
 
 function queueCheck(roomid, socketId) {
   if (!roomQueue.has(roomid)) {
     roomQueue.set(roomid, {
-      queue: ["https://www.youtube.com/watch?v=PsBPPkt0Rbg&ab_channel=LXNRKD"],
+      queue: ["https://www.youtube.com/watch?v=lTRiuFIWV54"],
       masterUser: socketId,
       currentTime: 0.0,
     });
@@ -100,14 +103,16 @@ io.of("/videos").on("connection", (socket) => {
     if (user) {
       let room = queueCheck(user.room, socket.id);
 
-      ownershipCheck(room, socket.id);
+      ownershipCheck(room, user, socket.id);
 
       if (socket.id == room.masterUser) {
-        room.queue.splice(0, 1);
-        roomQueue.set(user.room, room);
-        io.of("/videos")
-          .in(user.room)
-          .emit("client-video-sync", { queue: room });
+        if (room.queue) {
+          room.queue.splice(0, 1);
+          roomQueue.set(user.room, room);
+          io.of("/videos")
+            .in(user.room)
+            .emit("client-video-sync", { queue: room });
+        }
       }
     }
   });
@@ -117,7 +122,7 @@ io.of("/videos").on("connection", (socket) => {
     if (user) {
       let room = queueCheck(user.room, socket.id);
 
-      ownershipCheck(room, socket.id);
+      ownershipCheck(room, user, socket.id);
 
       if (data.video) {
         room.queue.push(data.video);
