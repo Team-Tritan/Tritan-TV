@@ -40,7 +40,7 @@ function queueCheck(roomid, socketId) {
   return roomQueue.get(roomid);
 }
 
-server.listen(80);
+server.listen(3000);
 
 mongoose
   .connect(config.mongoString, {
