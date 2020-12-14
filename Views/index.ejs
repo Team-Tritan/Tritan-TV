@@ -1,17 +1,36 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Tritan Radio</title>
-    <link rel="stylesheet" href="/css/styles.css">
-</head>
-<body>
-    <div class='page-banner'>
-        <h1>Tritan media</h1>
-        <p>Media sharing made simple.</p>
-        <div class='button-grid'>
-            <a href='/app/create' class='main-button'>Start Sharing.</a>
-            <a class='main-button'>Join A room.</a>
-        </div>
+  <head>
+    <title>Tritan Radio: Simple Media Sharing</title>
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  </head>
+
+  <!-- Nav Bar? -->
+  
+  <div id="wrapper">
+  <nav>
+    <ul>
+      <li><a href="#" class="active">HOME</a></li>
+      <li><a href="/about">ABOUT</a></li>
+      <li><a href="#">JOIN</a></li> 
+      <li><a href="/app/create">CREATE</li>
+    </ul>
+  </nav>
+</div>
+
+
+
+  <body>
+    <div class="page-banner">
+      <h1>Tritan Media</h1>
+      <p>Media sharing done right, made simple.</p>
+      <br />
+      <img src='/assets/music_icon.png' height="150px" width="150px"/>
+      <div class="button-grid">
+        <a href="/app/create" class="main-button">Get Started</a>
+        <a class="main-button">Join a Room</a>
+      </div>
     </div>
 
     <!--
@@ -28,52 +47,48 @@
     </div>-->
 
     <div id="sucsessPOP" class="modal">
-
-        <div class="modal-content">
-          <h3>You did it 🎉</h3>
-          <a><a id='room-link'>Go to your room</a> or share it to your friends</a>
-          <br>
-          <br>
-          <input id='modal-input' class='input' width='100%' value=''>
-        </div>
-      
+      <div class="modal-content">
+        <h3>You did it 🎉</h3>
+        <a><a id="room-link">Go to your room</a> or share it to your friends</a>
+        <br />
+        <br />
+        <input id="modal-input" class="input" width="100%" value="" />
+      </div>
     </div>
 
-
     <script>
-        var modal = document.getElementById("sucsessPOP");
+      var modal = document.getElementById("sucsessPOP");
 
-        function createRoom(){
-        
-            let data = {
-                name: document.getElementById("roomName").value
+      function createRoom() {
+        let data = {
+          name: document.getElementById("roomName").value,
+        };
+
+        let options = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json;charset=utf-8",
+          },
+          body: JSON.stringify(data),
+        };
+
+        let fRes = fetch("/api/v1/create", options);
+
+        fRes.then((res) => {
+          res.json().then((d) => {
+            if (d.id) {
+              document.getElementById(
+                "modal-input"
+              ).value = `${window.location.href}${d.id}`;
+              document.getElementById(
+                "room-link"
+              ).href = `${window.location.href}${d.id}`;
+              modal.style.display = "block";
+            } else {
             }
-
-            let options = { 
-                method: 'POST', 
-                headers: { 
-                    'Content-Type':  
-                        'application/json;charset=utf-8' 
-                }, 
-                body: JSON.stringify(data) 
-            } 
-
-            let fRes = fetch("/api/v1/create", options);
-
-            fRes.then(res => {
-                res.json().then(d => {
-                    if(d.id){
-                        document.getElementById('modal-input').value = `${window.location.href}${d.id}`;
-                        document.getElementById('room-link').href  = `${window.location.href}${d.id}`;
-                        modal.style.display = "block";
-                    }else{
-
-                    }
-                });
-            });
-        }
-
-
+          });
+        });
+      }
     </script>
-</body>
+  </body>
 </html>

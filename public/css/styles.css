@@ -231,3 +231,48 @@ input:checked + .slider:before {
     transform: translateY(-100vh);
   }
 }
+#wrapper {
+  margin: 0 auto;
+  width: 80%;
+}
+
+nav {
+  display: table;
+  width: 100%;
+  height: 1.4em;
+  border-collapse: collapse;
+  border: none;
+}
+
+nav ul {
+  display: table-row;
+}
+
+nav li {
+  display: table-cell;
+  margin: 0;
+  text-align: center;
+}
+
+nav li a {
+  display: block;
+  padding: 1em;
+  text-decoration: none;
+  font-weight: bold;
+  font-family: Verdana, Sans-Serif;
+  font-size: 1em;
+  color: #ffffff;
+  border-bottom: #600e80;
+}
+
+nav li a:hover {
+  background: #600e80;
+  display: block;
+}
+
+.active {
+  background-color: #600e80;
+  display: block;
+}
+
+/*   This is how you comment code out in CSS   */

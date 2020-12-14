@@ -1,51 +1,64 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>Tritan Radio</title>
-    <link rel="stylesheet" href="/css/styles.css">
-</head>
-<body>
-    <div class='page-onload-slidein' id='username-prompt'>
-        
-        <div class='center-screen'>
-            <h1>Please enter your name.</h1>
-            <input placeholder="Username.." id='username' class='username-input'>
-            <br>
-            <br>
-            <br>
-            
-            <a onclick='setName()' class='continue-styled'>Confirm</a>
-        </div>
-        <br>
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    
+    <div class="page-onload-slidein" id="username-prompt">
+      <div class="center-screen">
+        <h1>Please enter your name.</h1>
+        <input placeholder="Username.." id="username" class="username-input" />
+        <br />
+        <br />
+        <br />
+
+        <a onclick="setName()" class="continue-styled">Confirm</a>
+      </div>
+      <br />
     </div>
 
-    <div style='display: none;' id='set-room-options-prompt'>
-        
-        <div class='center-screen'>
-            <h1>Almost there!</h1>
-            <div class='options-inline'>
-                <div>
-                    <input placeholder="Room Name" id='roomName' class='username-input'>
-                    <input placeholder="User limit" id='user-limit' class='username-input'>
-                </div>
-                <br>
-                <div>
-                    <p>Private: </p>
-                    <label class="switch" id='checkbox-private'>
-                        <input type="checkbox" >
-                        <span class="slider round"></span>
-                    </label>   
+    <div style="display: none" id="set-room-options-prompt">
+      <div class="center-screen">
+        <h1>Almost there!</h1>
+        <div class="options-inline">
+          <div>
+            <input
+              placeholder="Room Name"
+              id="roomName"
+              class="username-input"
+            />
+            <input
+              placeholder="User limit"
+              id="user-limit"
+              class="username-input"
+            />
+          </div>
+          <br />
+          <div>
+            <p>Private:</p>
+            <label class="switch" id="checkbox-private">
+              <input type="checkbox" />
+              <span class="slider round"></span>
+            </label>
 
-                    <input placeholder="Password (Optional)" style='margin: 30px;' id='Password' class='username-input'>
-
-                </div>
-                <br>
-                <br>
-                <br>
-                <button onclick='createRoom()' class='continue-styled'>Create Room</button>
-            </div>
+            <input
+              placeholder="Password (Optional)"
+              style="margin: 30px"
+              id="Password"
+              class="username-input"
+            />
+          </div>
+          <br />
+          <br />
+          <br />
+          <button onclick="createRoom()" class="continue-styled">
+            Create Room
+          </button>
         </div>
-        <br>
+      </div>
+      <br />
     </div>
     <!--
     <div class='room-maker'>
@@ -61,76 +74,77 @@
     </div>-->
 
     <div id="sucsessPOP" class="modal">
-
-        <div class="modal-content">
-          <h3>You did it 🎉</h3>
-          <a><a id='room-link'>Go to your room</a> or share it to your friends</a>
-          <br>
-          <br>
-          <input id='modal-input' class='input' width='100%' value=''>
-        </div>
-      
+      <div class="modal-content">
+        <h3>You did it 🎉</h3>
+        <a><a id="room-link">Go to your room</a> or share it to your friends</a>
+        <br />
+        <br />
+        <input id="modal-input" class="input" width="100%" value="" />
+      </div>
     </div>
 
-
     <script>
-        var modal = document.getElementById("sucsessPOP");
-        var name;
-        console.log('%cStop!', 'font-size: 40px; color: red');
-        console.log('If you paste anything in the console it could give someone accsess to control your rooms!');
-        function setName(){
-            var nameInput = document.getElementById("username");
-            var usernamePrompt = document.getElementById('username-prompt');
-            var optionsPrompt = document.getElementById("set-room-options-prompt");
+      var modal = document.getElementById("sucsessPOP");
+      var name;
+      console.log("%cStop!", "font-size: 40px; color: red");
+      console.log(
+        "If you paste anything in the console it could give someone accsess to control your rooms!"
+      );
+      function setName() {
+        var nameInput = document.getElementById("username");
+        var usernamePrompt = document.getElementById("username-prompt");
+        var optionsPrompt = document.getElementById("set-room-options-prompt");
 
-            usernamePrompt.style.animation = "slideOutToTop 3s ease";
-            setTimeout(() => {
-                usernamePrompt.style.display = "none";
+        usernamePrompt.style.animation = "slideOutToTop 3s ease";
+        setTimeout(() => {
+          usernamePrompt.style.display = "none";
 
-                optionsPrompt.style.animation = "slideInFromTop 3s ease";
-                optionsPrompt.style.display = "block";
-            }, 3000);
+          optionsPrompt.style.animation = "slideInFromTop 3s ease";
+          optionsPrompt.style.display = "block";
+        }, 3000);
 
+        name = nameInput.value;
+        localStorage.setItem("name", name);
+      }
 
-            name = nameInput.value;
-            localStorage.setItem("name", name);
-        }
+      function createRoom() {
+        console.log(document.getElementById("checkbox-private").value);
+        let data = {
+          name: document.getElementById("roomName").value,
+          userLimit: document.getElementById("user-limit").value
+            ? document.getElementById("user-limit").value
+            : 90,
+          privacy: document.getElementById("checkbox-private").value,
+          password: document.getElementById("Password").value,
+        };
 
-        function createRoom(){
-            console.log(document.getElementById('checkbox-private').value);
-            let data = {
-                name: document.getElementById("roomName").value,
-                userLimit: document.getElementById("user-limit").value ? document.getElementById("user-limit").value : 90,
-                privacy: document.getElementById('checkbox-private').value,
-                password: document.getElementById('Password').value
+        let options = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json;charset=utf-8",
+          },
+          body: JSON.stringify(data),
+        };
+
+        let fRes = fetch("/api/v1/create", options);
+
+        fRes.then((res) => {
+          res.json().then((d) => {
+            if (d.id) {
+              localStorage.setItem(`ownershipToken_${d.id}`, d.ownerToken);
+              document.getElementById(
+                "modal-input"
+              ).value = `${window.location.href}${d.id}`;
+              document.getElementById(
+                "room-link"
+              ).href = `${window.location.href}${d.id}`;
+              modal.style.display = "block";
+            } else {
+              console.log(d);
             }
-
-            let options = { 
-                method: 'POST', 
-                headers: { 
-                    'Content-Type':  
-                        'application/json;charset=utf-8' 
-                }, 
-                body: JSON.stringify(data) 
-            } 
-
-            let fRes = fetch("/api/v1/create", options);
-
-            fRes.then(res => {
-                res.json().then(d => {
-                    if(d.id){
-                        localStorage.setItem(`ownershipToken_${d.id}`, d.ownerToken);
-                        document.getElementById('modal-input').value = `${window.location.href}${d.id}`;
-                        document.getElementById('room-link').href  = `${window.location.href}${d.id}`;
-                        modal.style.display = "block";
-                    }else{
-                        console.log(d);
-                    }
-                });
-            });
-        }
-
-
+          });
+        });
+      }
     </script>
-</body>
+  </body>
 </html>
