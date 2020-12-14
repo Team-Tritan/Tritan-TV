@@ -143,11 +143,12 @@
       }
 
       myPlayer.ready(() => {
-        resizeVideoJS();
         console.log("player ready");
+        resizeVideoJS();
       });
 
       myPlayer.on("play", () => {
+        videos.emit("user-video-sync", { roomId: room.id });
         videos.emit("user-time-sync");
         console.log("time sync");
       });
