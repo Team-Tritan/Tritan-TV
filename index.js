@@ -157,7 +157,7 @@ io.of("/videos").on("connection", (socket) => {
     if (user) {
       let room = queueCheck(user.room, socket.id);
 
-      if (socket.id == room.id) {
+      if (socket.id == room.masterUser) {
         room.masterUser = "";
         roomQueue.set(user.room, room);
       }
