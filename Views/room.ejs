@@ -101,8 +101,8 @@
 
 <script>
     const room = JSON.parse('<%- JSON.stringify(room) %>');
-    const socket = io('ws://websocket.teamtritan.wtf/chat');
-    const videos = io("ws://websocket.teamtritan.wtf/videos");
+    const socket = io('https://websocket.teamtritan.wtf/chat');
+    const videos = io("https://websocket.teamtritan.wtf/videos");
 
     var myPlayer;
 
