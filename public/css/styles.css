@@ -274,5 +274,13 @@ nav li a:hover {
   background-color: #600e80;
   display: block;
 }
-
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  background-color: #151226;
+  color: white;
+  text-align: center;
+}
 /*   This is how you comment code out in CSS   */
