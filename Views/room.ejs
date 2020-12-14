@@ -68,7 +68,7 @@
                         controls
                         width="1280"
                         height="720"
-                        data-setup='{ "techOrder": ["youtube"], "sources": [{ "type": "video/youtube", "src": "https://www.youtube.com/watch?v=_QfPliSW83A&ab_channel=Emma"}], "youtube": { "customVars": { "wmode": "transparent" } } }'
+                        data-setup='{ "techOrder": ["youtube"], "sources": [{ "type": "video/youtube", "src": "https://www.youtube.com/watch?v=puCbbITNhT8&ab_channel=Hilzu"}], "youtube": { "customVars": { "wmode": "transparent" } } }'
                       >
                       </video>
                       <div class='room-info'>
@@ -123,10 +123,12 @@
 
         myPlayer.ready(() =>{
             resizeVideoJS();
+            console.log("player ready");
         });
 
         myPlayer.on('play', () => {
             videos.emit("user-time-sync");
+            console.log("time sync");
         });
 
         myPlayer.on('pause', () => {
@@ -147,12 +149,11 @@
         videos.emit('user-video-sync', { roomId:  room.id });
 
         videos.on("client-video-sync", data => {
-            console.log(data.queue);
-            if(data.queue.queue){
+            console.log(data.queue.queue[0]);
+            if(data.queue){
                 if(myPlayer){
                     let queue = data.queue;
-                    myPlayer.src([{ type: 'video/youtube', src: queue.queue[0] }]);
-                    myPlayer.currentTime(190);
+                    myPlayer.src([{ type: 'video/youtube', src: data.queue.queue[0] }]);
                     myPlayer.play();
                     videos.emit('user-time-sync', { roomId:  room.id });
                     document.getElementById("status-monitor").innerText = "Watching youtube with 1 people";

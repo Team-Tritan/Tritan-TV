@@ -56,7 +56,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/", express.static(path.join(__dirname, "public")));
 app.use("/client", express.static(path.join(__dirname, "node_modules")));
-app.set("views", path.join(__dirname, "/views"));
+app.set("views", path.join(__dirname, "/Views"));
 app.set("view engine", "ejs");
 
 app.use("/", routing);
@@ -107,7 +107,7 @@ io.of("/videos").on("connection", (socket) => {
 
   socket.on("user-time-sync", (data) => {
     let user = connectedQueue.get(socket.id);
-    console.log(socket.id);
+    console.log(`User Is time syncing ${socket.id}`);
     if (user) {
       let room = queueCheck(user.room, socket.id);
       console.log(room.masterUser);
