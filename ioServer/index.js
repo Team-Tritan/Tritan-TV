@@ -13,7 +13,7 @@ let connectedUsers = new Map();
 let connectedQueue = new Map();
 let roomQueue = new Map();
 
-server.listen(3000, () => {
+server.listen(80, () => {
   console.log("Listening for socket connections");
 });
 
