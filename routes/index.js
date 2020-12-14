@@ -6,9 +6,8 @@ var route = new Router();
 route.use("/app", app);
 route.use("/api", api);
 
-route.use('/', (req, res, next) => {
-    res.redirect('/app');
+route.use("/", (req, res, next) => {
+  res.redirect("/app");
 });
-
 
 module.exports = route;
