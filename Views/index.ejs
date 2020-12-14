@@ -3,33 +3,40 @@
   <head>
     <title>Tritan Radio: Simple Media Sharing</title>
     <link rel="stylesheet" href="/css/styles.css" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   </head>
 
   <!-- Nav Bar? -->
-  
+
   <div id="wrapper">
-  <nav>
-    <ul>
-      <li><a href="#" class="active">HOME</a></li>
-      <li><a href="/about">ABOUT</a></li>
-      <li><a href="#">JOIN</a></li> 
-      <li><a href="/app/create">CREATE</li>
-    </ul>
-  </nav>
-</div>
-
-
+    <nav>
+      <ul>
+        <li><a href="/app" class="active">HOME</a></li>
+        <li><a href="/about">ABOUT</a></li>
+        <li><a href="/app/join">JOIN</a></li>
+        <li><a href="/app/create">CREATE</a></li>
+      </ul>
+    </nav>
+  </div>
 
   <body>
     <div class="page-banner">
       <h1>Tritan Media</h1>
-      <p>Media sharing done right, made simple.</p>
       <br />
-      <img src='/assets/music_icon.png' height="150px" width="150px"/>
+      <p style="color: white">Media sharing done right, made simple.</p>
+      <br />
+      <br />
+      <img src="/assets/music_icon.png" height="150px" width="150px" />
       <div class="button-grid">
+        <br />
+        <br />
         <a href="/app/create" class="main-button">Get Started</a>
-        <a class="main-button">Join a Room</a>
+        <a href="/app/join" class="main-button">Join a Room</a>
       </div>
     </div>
 
