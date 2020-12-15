@@ -1,8 +1,8 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Rubik&display=swap");
 
 body {
   background-color: #151226 !important;
-  font-family: "Roboto", sans-serif;
+  font-family: "Rubik", sans-serif;
   color: white;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -266,7 +266,11 @@ input:checked + .slider:before {
 }
 #wrapper {
   margin: 0 auto;
-  width: 80%;
+  height: 80px;
+  width: 100%;
+  padding: 10px;
+  background-color: #1c1c1c;
+  z-index: 99;
 }
 
 nav {
@@ -292,19 +296,26 @@ nav li a {
   padding: 1em;
   text-decoration: none;
   font-weight: bold;
-  font-family: Verdana, Sans-Serif;
-  font-size: 1em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-size: 1.2em;
   color: #ffffff;
   border-bottom: #600e80;
 }
 
+nav .logo {
+  color: #bf307f !important;
+  font-size: 1.3em;
+}
+
 nav li a:hover {
-  background: #600e80;
+  color: grey !important;
   display: block;
 }
 
 .active {
-  background-color: #600e80;
+  color: grey !important;
   display: block;
 }
 .footer {
