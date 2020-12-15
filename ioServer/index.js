@@ -107,7 +107,10 @@ io.of("/videos").on("connection", (socket) => {
 
       if (socket.id == room.masterUser) {
         if (room.queue) {
-          room.queue.splice(0, 1);
+          if (room.queue.length > 1) {
+            room.queue.splice(0, 1);
+            console.log(room);
+          }
           roomQueue.set(user.room, room);
           io.of("/videos")
             .in(user.room)
@@ -123,9 +126,10 @@ io.of("/videos").on("connection", (socket) => {
       let room = queueCheck(user.room, socket.id);
 
       ownershipCheck(room, user, socket.id);
-
       if (data.video) {
         room.queue.push(data.video);
+        console.log(room.queue);
+        roomQueue.set(user.room, room);
       }
     }
   });

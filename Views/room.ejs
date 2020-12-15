@@ -143,11 +143,12 @@
       }
 
       myPlayer.ready(() => {
-        resizeVideoJS();
         console.log("player ready");
+        resizeVideoJS();
       });
 
       myPlayer.on("play", () => {
+        videos.emit("user-video-sync", { roomId: room.id });
         videos.emit("user-time-sync");
         console.log("time sync");
       });
@@ -174,7 +175,7 @@
       videos.emit("user-video-sync", { roomId: room.id });
 
       videos.on("client-video-sync", (data) => {
-        console.log(data.queue.queue[0]);
+        console.log(data.queue.queue);
         if (data.queue) {
           if (myPlayer) {
             let queue = data.queue;
@@ -254,113 +255,6 @@
         }
       });
 
-        myPlayer.ready(() =>{
-            videos.emit('user-video-sync', { roomId:  room.id });
-            console.log("player ready");
-            resizeVideoJS();
-        });
-
-        myPlayer.on('play', () => {
-            videos.emit("user-time-sync");
-            console.log("time sync");
-        });
-
-        myPlayer.on('pause', () => {
-            videos.emit("user-time-sync");
-        });
-
-
-        window.addEventListener('resize', resizeVideoJS);
-
-        socket.on('connect', () => {
-            document.getElementById('loader').style.display = "none";
-            document.getElementById("main-content").style.display = "block";
-            checkOwnership();
-        });
-
-        socket.emit('join-chat', { roomId:  room.id, name: localStorage.getItem("name") ? localStorage.getItem("name") : "Anon"});
-        videos.emit('join-room-queue', { roomId:  room.id });
-       // videos.emit('user-video-sync', { roomId:  room.id });
-
-        videos.on("client-video-sync", data => {
-            console.log("Video syncing");
-            if(data.queue){
-                if(myPlayer){
-                    let queue = data.queue;
-                    myPlayer.src([{ type: 'video/youtube', src: data.queue.queue[0] }]);
-                    myPlayer.play();
-                    videos.emit('user-time-sync', { roomId:  room.id });
-                    document.getElementById("status-monitor").innerText = "Watching youtube with 1 people";
-                    document.getElementById("status-monitor-img").src = "/assets/ytLogo.png";
-                    document.getElementById("status-monitor-img-holder").style.border = "3px solid red";
-                }
-            }
-        });
-
-        videos.on("send-time-sync", () => {
-            let playerTime = myPlayer.currentTime();
-            var isPlaying = !myPlayer.paused();
-            console.log( {time: playerTime ? playerTime : 0, state: isPlaying })
-
-            videos.emit("server-time-sync", {time: playerTime, state: isPlaying });
-        });
-
-        videos.on("client-time-sync", (data) => {
-            if(myPlayer.currentTime() > (data.time + 2)  || myPlayer.currentTime() < (data.time - 2)){
-                myPlayer.currentTime(data.time);
-                console.log("out of player acceptible range")
-            }
-            console.log(data.state);
-            if(data.state){
-                myPlayer.play();
-            } else {
-                myPlayer.pause();
-            }
-        });
-
-        socket.on(`chat-message`, data => {
-            const messageHolder = document.getElementById('message-holder');
-            const messageElement = document.createElement('div');
-            messageElement.innerText = `${data.name}: ${data.message}`;
-            messageHolder.append(messageElement);
-        });
-
-        socket.on(`system-log`, (data) => {
-            const messageHolder = document.getElementById('message-holder');
-            const messageElement = document.createElement('div');
-            messageElement.innerText = `${data}`;
-            messageElement.style.color = "grey";
-            messageHolder.append(messageElement);
-        });
-
-        
-        document.getElementById("send-button").addEventListener('click', () => {
-            const message = document.getElementById("message").value;
-            document.getElementById("message").value = "";
-            socket.emit('message', { message: message });
-
-        });
-
-        document.getElementById("send-queue").addEventListener('click', () => {
-            const queueVideo = document.getElementById("queueVideo").value;
-            document.getElementById("queueVideo").value = "";
-            videos.emit('user-add-to-queue', { video: queueVideo });
-
-        });
-
-
-        document.getElementById('advance-queue').addEventListener('click', () => {
-            videos.emit('advance-queue', { video: queueVideo });
-
-        });
-
-        document.getElementById("message").addEventListener('keyup', (key) => {
-            if(key.keyCode == 13){
-                const message = document.getElementById("message").value;
-                document.getElementById("message").value = "";
-                socket.emit('message', { message: message });
-            }
-        });
 
         /*
         document.getElementById("video-button").addEventListener('click', () => {
