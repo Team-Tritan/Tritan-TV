@@ -273,61 +273,6 @@ input:checked + .slider:before {
   z-index: 99;
 }
 
-nav {
-  position: relative;
-  display: table;
-  width: 100%;
-  height: 1.4em;
-  border-collapse: collapse;
-  border: none;
-}
-
-nav ul {
-  display: table-row;
-}
-
-nav li {
-  display: table-cell;
-  margin: 0;
-  text-align: center;
-}
-
-nav li a {
-  display: block;
-  padding: 1em;
-  text-decoration: none;
-  font-weight: bold;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
-  font-size: 1.2em;
-  color: #ffffff;
-  border-bottom: #600e80;
-}
-
-nav .right {
-  position: absolute;
-  right: 0;
-  top: 0;
-  background-color: rgb(116, 30, 165);
-  border-radius: 4px;
-  padding: 18px;
-}
-
-nav .logo {
-  color: #bf307f !important;
-  font-size: 1.3em;
-}
-
-nav li a:hover {
-  color: grey !important;
-  display: block;
-}
-
-.active {
-  color: grey !important;
-  display: block;
-}
 .footer {
   position: fixed;
   left: 0;
