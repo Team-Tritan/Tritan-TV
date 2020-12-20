@@ -32,7 +32,7 @@ class LoginForm extends Component {
                             <input className="input-fields" id='username' placeholder="Username"></input>
                             <input className="input-fields" id='email' placeholder="Email"></input>
                             <input className="input-fields" id='password' placeholder="Password"></input>
-                            <button className="submit-button">Register ></button>
+                            <button className="submit-button">Register </button>
                         </div>
                     </div>
                 </div>
