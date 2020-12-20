@@ -1,0 +1,92 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+  box-sizing: border-box;
+  text-decoration: none;
+  color: white;
+}
+
+body {
+  background-color: #15162b;
+}
+
+li {
+  list-style-type: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+nav {
+  display: flex;
+  min-height: 30px;
+  text-align: center;
+  padding: 20px 10px;
+  justify-content: space-around;
+}
+
+nav .logo {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+nav .nav-links {
+  display: flex;
+  justify-content: space-around;
+}
+
+.upload-icon {
+  width: auto;
+  height: 35px;
+  margin-top: -3px;
+  padding: 5px;
+}
+
+nav .nav-link {
+  margin-left: 50px;
+}
+
+nav .special {
+  background-color: #d10b94;
+  border-radius: 4px;
+  padding: 10px;
+  top: -10px;
+  margin-top: -5px;
+  max-height: 40px;
+}
+
+nav .nav-links a {
+  justify-content: center;
+  background: none !important;
+}
+
+nav .nav-search {
+  height: 35px;
+  max-width: 500px;
+  width: 40vw;
+  border: none;
+  padding: 10px;
+  background-color: #10111b;
+  margin: 0;
+}
+
+nav .input {
+  margin-top: -1px;
+}
+
+.search-button {
+  padding: 8px;
+  background-color: #d10b94;
+}
+
+nav .logo .logo-part-2 {
+  color: #4dcafa;
+}
+
+nav .logo .logo-part-1 {
+  color: #d10b94;
+}

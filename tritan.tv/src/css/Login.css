@@ -1,0 +1,51 @@
+:root {
+  --color2: rgb(255, 255, 255);
+}
+
+.wrapper {
+  width: 50%;
+  margin: 0 auto;
+}
+
+.wrapper .content {
+  margin-top: 100px;
+  text-align: center;
+}
+
+.input-fields {
+  padding: 15px 20px;
+  background-color: var(--color2);
+  border: none;
+  display: flex;
+  border-radius: 50px;
+  height: 50px;
+  width: 50%;
+  margin: 0 auto;
+  margin-top: 10px;
+  color: black;
+}
+
+.fun-facts {
+  float: left;
+  text-align: center;
+}
+
+.submit-button {
+  background-color: #15162b;
+  font-size: 16px;
+  border-radius: 50px;
+  padding: 10px 50px;
+  width: 50%;
+  height: 50px;
+  border: none;
+  margin-top: 30px;
+}
+
+.classy-box {
+  background: linear-gradient(to bottom right, #4dcafa, #d10b94);
+  width: 100%;
+  margin: 0 auto;
+  border-radius: 10px;
+  padding: 50px;
+  height: 500px;
+}
